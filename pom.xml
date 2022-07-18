@@ -11,6 +11,8 @@
 	<groupId>com.esprit</groupId>
 	<artifactId>workspace-wellbeing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+
 	<name>workspace-wellbeing</name>
 	<description>PIDEV project for 2022</description>
 	<properties>
@@ -107,6 +109,12 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+            <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-tomcat</artifactId>
+                        <scope>provided</scope>
+                </dependency>
 	</dependencies>
 
 	<build>
