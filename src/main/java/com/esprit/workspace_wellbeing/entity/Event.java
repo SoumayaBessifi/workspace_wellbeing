@@ -1,7 +1,6 @@
 package com.esprit.workspace_wellbeing.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +29,11 @@ public class Event implements Serializable {
 
     private String file ;
 
-  
+	@Override
+	public String toString() {
+		return "You are kindely invited to the event "+ title + " in "+lieu +" at "+start_date;
+	}
+
+    
 
 }
