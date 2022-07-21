@@ -4,6 +4,9 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +16,7 @@ import java.util.Date;
 
 
 		private Long id_Offre;
+		private String offre_name;
 		private String description;
 		private MultipartFile image;
  		private Date date_offre;
@@ -68,6 +72,12 @@ import java.util.Date;
 		}
 		public void setRate(int rate) {
 			this.rate = rate;
+		}
+		public String getOffre_name() {
+			return offre_name;
+		}
+		public void setOffre_name(String offre_name) {
+			this.offre_name = offre_name;
 		}
 
 
