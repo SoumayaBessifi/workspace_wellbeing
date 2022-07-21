@@ -60,11 +60,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/application/**").hasAnyRole( "COMPANY" ,"ADMIN","USER")
+                .antMatchers("/**/index.html").permitAll()
+                .antMatchers("/**/*.css").permitAll()
+    			.antMatchers("/**/*.js").permitAll()    			
+    			.antMatchers("/**/*.jpg").permitAll()
+    			.antMatchers("/ws_chat/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
+    }  
+    
 }
