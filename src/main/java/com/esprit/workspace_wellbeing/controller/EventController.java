@@ -1,14 +1,19 @@
 package com.esprit.workspace_wellbeing.controller;
 
  
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.esprit.workspace_wellbeing.entity.Event;
+import com.esprit.workspace_wellbeing.entity.EventDto;
+import com.esprit.workspace_wellbeing.entity.Offre;
+import com.esprit.workspace_wellbeing.entity.OffreDto;
 import com.esprit.workspace_wellbeing.repository.EventRepository;
 import com.esprit.workspace_wellbeing.service.EventService;
+import com.esprit.workspace_wellbeing.utilities.FileUtilities;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +33,17 @@ public class EventController {
 
     @Autowired
     private  EventService eventService;
+    @Autowired
+	ModelMapper modelMapper;
+    
+	@RequestMapping(value="/events", method= RequestMethod.POST, headers = "Accept=application/json",consumes= org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE, produces=org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+ 	public Event addEvent(@RequestBody @ModelAttribute EventDto eventDto) {
+		Event event = modelMapper.map(eventDto, Event.class);
+		String imageFileName = eventDto.getEvent_image().getOriginalFilename();
+		FileUtilities.saveArticleImage(imageFileName, eventDto.getEvent_image());
+		event.setEvent_image("C:/images/offres/" + imageFileName);
+		return eventRepository.save(event);
+		}
 
     @GetMapping("/events")
     public ResponseEntity<List<Event>> GetAllEvents() {
@@ -70,18 +86,7 @@ public class EventController {
 
     }
 
- 
 
-    @PostMapping("/events")
-    public ResponseEntity<Event> addEvent(@RequestBody Event company) {
-        Event eventLocal = null;
-        eventLocal = eventRepository.save(company);
-
-        if (eventLocal == null)
-            return ResponseEntity.noContent().build();
-        return new ResponseEntity<>(eventLocal, HttpStatus.OK);
-
-    }
 
 
     @DeleteMapping("/events/{eventId}")

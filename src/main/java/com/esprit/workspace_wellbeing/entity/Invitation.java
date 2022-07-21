@@ -19,11 +19,12 @@ public class Invitation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_invitation ;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+   /* @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "invitation_etats", joinColumns = @JoinColumn(name = "id_invitation"), inverseJoinColumns = @JoinColumn(name = "etat_id"))
-    private Set<Etat> validation = new HashSet<>();
+    private Set<Etat> validation = new HashSet<>();*/
 
 
+    
     private String favoris ;
 
     private String participation ;

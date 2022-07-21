@@ -1,6 +1,7 @@
 package com.esprit.workspace_wellbeing.controller;
 
- 
+import org.springframework.http.ResponseEntity;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +35,9 @@ import com.esprit.workspace_wellbeing.repository.EtatRepository;
 import com.esprit.workspace_wellbeing.repository.EventRepository;
 import com.esprit.workspace_wellbeing.repository.InvitationRepository;
 import com.esprit.workspace_wellbeing.repository.NotificationRepository;
+import com.esprit.workspace_wellbeing.repository.UserRepository;
 import com.esprit.workspace_wellbeing.security.jwt.request.InvitationForm;
+import com.esprit.workspace_wellbeing.security.jwt.response.ResponseMessage;
 import com.esprit.workspace_wellbeing.service.InvitationService;
 import com.esprit.workspace_wellbeing.service.NotificationService;
 import com.esprit.workspace_wellbeing.enums.EtatName;
@@ -61,6 +64,8 @@ public class InvitationController {
     @Autowired
     private NotificationRepository notificationRepository;
     
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private NotificationService notificationService;
     
@@ -100,6 +105,12 @@ public class InvitationController {
 
     }
     
+    @GetMapping("/invitations/{event_id}/{receiver_id}")
+    public ResponseEntity<List<Invitation>> existInvitationToSender(@PathVariable long event_id,@PathVariable Long receiver_id) {
+        List<Invitation> listInvitation; 
+        listInvitation=invitationRepository.existInvitationToSender(event_id,receiver_id);
+        return new ResponseEntity<>(listInvitation, HttpStatus.OK);
+    }
 
     @PutMapping("/invitations/{invitation_Id}")
     public ResponseEntity<Invitation> pullActivity(@PathVariable long invitation_Id,@RequestBody Invitation invitation) {
@@ -108,7 +119,7 @@ public class InvitationController {
         
          if(activityData.isPresent()){
             Invitation invitationLocal = activityData.get();
-            invitationLocal.setValidation(invitation.getValidation());
+//            invitationLocal.setValidation(invitation.getValidation());
             invitationLocal.setFavoris(invitation.getFavoris());
             invitationLocal.setParticipation(invitation.getParticipation());
 
@@ -118,57 +129,27 @@ public class InvitationController {
          }
 
     }
-
- 
       
    
-    @PostMapping("/invitations/{receiver_id}/{sender_id}/{event_id}")
-    public ResponseEntity<Invitation> addInvitation(@RequestBody Invitation invitationRequest, @PathVariable long receiver_id, @PathVariable long sender_id, @PathVariable long event_id) {
-    /*Long notifId=(long) 1;
-    Notification  notification= new Notification(notifId++, "New Invitation", invitationRequest);
-    notificationService.addNotification(notification,notifId++);	*/
+    @PostMapping("/invitations/{receiver_username}/{sender_username}/{event_id}")
+    public ResponseEntity<?> addInvitation(@RequestBody Invitation invitationRequest,
+    		@PathVariable String receiver_username,
+    		@PathVariable String sender_username,
+    		@PathVariable long event_id) {
     
-     /*   Set<String> strRoles = invitationRequest.getValidation();
-        Set<Etat> roles = new HashSet<>();
-  
-        strRoles.forEach(valid -> {
-            switch (valid) {
-                case "attente":
-                    Etat adminRole = etatRepository.findByName(EtatName.ETAT_ATTENTE).get();
-                    roles.add(adminRole);
-                    break;
-                case "accepter":
-                Etat companyRole = etatRepository.findByName(EtatName.ETAT_ACCEPTER).get();
-                             
-                    roles.add(companyRole);
+    	Long receiver_id=userRepository.findByUsername(receiver_username).get().getId();
 
-                    break;
-
-                default:
-                Etat userRole = etatRepository.findByName(EtatName.ETAT_REFUSER).get();
-                             
-                    roles.add(userRole);
-            }
-        });
-
-
-        Invitation invitation = new Invitation(
-            invitationRequest.getFavoris(),
-             invitationRequest.getParticipation()
-              );
-                
-             invitation.setValidation(roles);
-        Invitation invitationLocal = invitationService.addInvitation(invitation,receiver_id,sender_id ,event_id);
-  
-
-        if (invitationLocal == null)
-            return ResponseEntity.noContent().build();
-        return new ResponseEntity<>(invitationLocal, HttpStatus.OK);*/
-    	  Invitation invitationLocal = invitationService.addInvitation(invitationRequest,receiver_id,sender_id ,event_id);
+    	  List<Invitation> listInvitations=invitationService.existInvitationToSender(event_id, receiver_id);
+    	  if(listInvitations.size()>0) {
+    		   return new ResponseEntity<>(new ResponseMessage("Fail -> Invitation already Sent to "+ receiver_username),
+                       HttpStatus.BAD_REQUEST);
+    		   }
+    	  else {
+    	  Invitation invitationLocal = invitationService.addInvitation(invitationRequest,receiver_username,sender_username ,event_id);
           if (invitationLocal == null)
               return ResponseEntity.noContent().build();
           return new ResponseEntity<>(invitationLocal, HttpStatus.OK);
-
+    	  }
     }
 
 

@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.Serializable;
 import java.util.Date ;
 
@@ -18,6 +21,8 @@ public class Event implements Serializable {
     private Long id_event ;
   
     private String description ;
+
+    private String event_image;
 
     private String title ;
 
