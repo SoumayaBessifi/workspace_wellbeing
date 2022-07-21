@@ -21,6 +21,8 @@ import com.esprit.workspace_wellbeing.entity.Event;
 import com.esprit.workspace_wellbeing.entity.Invitation;
 import com.esprit.workspace_wellbeing.repository.EventRepository;
 import com.esprit.workspace_wellbeing.repository.InvitationRepository;
+import com.esprit.workspace_wellbeing.repository.UserRepository;
+import com.esprit.workspace_wellbeing.security.jwt.response.ResponseMessage;
 
 import com.esprit.workspace_wellbeing.service.InvitationService;
 
@@ -41,6 +43,8 @@ public class InvitationController {
     @Autowired
     private InvitationRepository invitationRepository;
 
+    @Autowired
+    private UserRepository userRepository;
     
     @Autowired
     private InvitationService invitationService;
@@ -118,19 +122,19 @@ public class InvitationController {
     		@PathVariable String sender_username,
     		@PathVariable long event_id) throws MessagingException, IOException {
     
-    	/*Long receiver_id=userRepository.findByUsername(receiver_username).get().getId();
+    	Long receiver_id=userRepository.findByUsername(receiver_username).get().getId();
 
     	  List<Invitation> listInvitations=invitationService.existInvitationToSender(event_id, receiver_id);
-    	  if(listInvitations.size()>0) {
+    	 if(listInvitations.size()>0) {
     		   return new ResponseEntity<>(new ResponseMessage("Fail -> Invitation already Sent to "+ receiver_username),
                        HttpStatus.BAD_REQUEST);
     		   }
-    	  else {*/
+    	  else {
     	  Invitation invitationLocal = invitationService.addInvitation(invitationRequest,receiver_username,sender_username ,event_id);
           if (invitationLocal == null)
-              return ResponseEntity.noContent().build();
+               ResponseEntity.noContent().build();
           return new ResponseEntity<>(invitationLocal, HttpStatus.OK);
-    	 // }
+    	  }
     }
 
 

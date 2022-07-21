@@ -51,9 +51,9 @@ public class InvitationService implements IinvitationService {
         String receiver_mail= userRepository.findByUsername(receiver_username).get().getMail();
         String sender_mail= userRepository.findByUsername(sender_username).get().getMail();
         
+        String subject= "Invitation to:"+invitation.getEvent().getTitle();
         
-      
-             
+        String body= eventRepository.findById(event_id).get().toString();             
         //better on time
         
         /*MimeMessage message = mailSender.createMimeMessage();
@@ -69,7 +69,8 @@ public class InvitationService implements IinvitationService {
        helper.setSubject("Invitation to:"+invitation.getEvent().getTitle() );
        
        mailSender.send(message);*/
-	   sendMailWithAttachement(sender_mail,receiver_mail, "body", "toto",
+        
+	   sendMailWithAttachement(sender_mail,receiver_mail, body, subject,
 			   eventRepository.findById(event_id).get().getEvent_image());
        return invitationRepository.save(invitation);
     }
