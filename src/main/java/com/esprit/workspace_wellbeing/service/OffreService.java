@@ -46,6 +46,13 @@ public class OffreService implements IOffreService {
 	public Offre updateOffre(Offre o) {
 		return offreRepository.save(o);
 	}
+	
+	@Override
+	public List<Offre> findAllOffreByCollaborationName(String col) {
+		return offreRepository.findByCollaboration(col);
+
+	}
+
 
 	
 
