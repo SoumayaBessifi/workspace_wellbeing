@@ -12,6 +12,9 @@ public interface IOffreService {
 	public void deleteOffre(Long id);
 	public Offre getOffre(Long id);
 	public Offre updateOffre(Offre o);
+	public List<Offre>  findAllOffreByCollaborationName(String col);
+
+
 
 
 }

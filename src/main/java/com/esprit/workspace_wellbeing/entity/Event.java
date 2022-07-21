@@ -4,7 +4,6 @@ package com.esprit.workspace_wellbeing.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date ;
@@ -19,6 +18,8 @@ public class Event implements Serializable {
   
     private String description ;
 
+    private String event_image;
+
     private String title ;
 
     private Date start_date ;
@@ -26,8 +27,6 @@ public class Event implements Serializable {
     private Date end_date ;
 
     private String lieu ;
-
-    private String file ;
 
 	@Override
 	public String toString() {
