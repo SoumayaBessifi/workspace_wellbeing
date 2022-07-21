@@ -1,8 +1,11 @@
 package com.esprit.workspace_wellbeing.entity;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -56,12 +60,46 @@ public class Post {
 			this.content = content;
 		}
 
-		public LocalDateTime getCreationDate() {
-			return creationDate;
+
+		public Timestamp getCreationDateTimeStamp() {
+			return creationDateTimeStamp;
 		}
 
-		public void setCreationDate(@NotBlank LocalDateTime creationDate) {
-			this.creationDate = creationDate;
+		public void setCreationDateTimeStamp(Timestamp creationDateTimeStamp) {
+			this.creationDateTimeStamp = creationDateTimeStamp;
+		}
+
+		public List<Interaction> getPostInteractions() {
+			return postInteractions;
+		}
+
+		public void setPostInteractions(List<Interaction> postInteractions) {
+			this.postInteractions = postInteractions;
+		}
+
+		public List<Reactions> getPostReaction() {
+			return postReaction;
+		}
+
+		public void setPostReaction(List<Reactions> postReaction) {
+			this.postReaction = postReaction;
+		}
+
+		
+
+		public Post(Long postId, @NotNull @Size(max = 100) String title, @NotBlank String content, Integer status,
+				Timestamp creationDateTimeStamp, String pathFile, User userPosterId, List<Interaction> postInteractions,
+				List<Reactions> postReaction) {
+			super();
+			this.postId = postId;
+			this.title = title;
+			this.content = content;
+			this.status = status;
+			this.creationDateTimeStamp = creationDateTimeStamp;
+			this.pathFile = pathFile;
+			this.userPosterId = userPosterId;
+			this.postInteractions = postInteractions;
+			this.postReaction = postReaction;
 		}
 
 		public String getPathFile() {
@@ -80,16 +118,13 @@ public class Post {
 			this.userPosterId = userPosterId;
 		}
 
-		public Post(Long postId, @NotNull @Size(max = 100) String title, @NotBlank String content,
-			@NotBlank @NotBlank LocalDateTime creationDate, String pathFile, User userPosterId) {
-		super();
-		this.postId = postId;
-		this.title = title;
-		this.content = content;
-		this.creationDate = creationDate;
-		this.pathFile = pathFile;
-		this.userPosterId = userPosterId;
-	}
+		public Integer getStatus() {
+			return status;
+		}
+
+		public void setStatus(Integer status) {
+			this.status = status;
+		}
 
 		@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -101,15 +136,22 @@ public class Post {
 	 
 	 	@NotBlank
 	 	private String content;
+	 	
+	 	private Integer status;
 	 
-	 	@NotBlank
-	 	@CreationTimestamp
-	 	private LocalDateTime creationDate;
+	 	 @CreationTimestamp
+		    private Timestamp creationDateTimeStamp;
 	 	
 	 	private String pathFile;
 	 	
 	 	@ManyToOne 
 	 	@JoinColumn (name="userPosterId")
 	 	User userPosterId;
+	 	
+	 	 @OneToMany(mappedBy = "postInteraction", cascade = CascadeType.ALL)
+	     private List<Interaction> postInteractions;
+	 	 
+	 	 @OneToMany(mappedBy = "postReaction", cascade = CascadeType.ALL)
+	 	 private List<Reactions> postReaction;
 
 }

@@ -1,6 +1,7 @@
 package com.esprit.workspace_wellbeing.controller;
 
 import java.awt.print.Pageable;
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -43,10 +44,28 @@ public class PostRestAPIs {
 	        return postservice.findAll();
 	    }
 	 
+	 @GetMapping("/posts/mostRecentPosts")
+	    public String showMostRecentPosts() {
+	        return postservice.showMostRecentPosts();
+	    }
+	 
+	 
+	 
+	 
 	@PatchMapping("/posts/{postId}")
 	    public Post updatePost(@PathVariable long postId, @Valid @RequestBody Post postRequest) {
 		 		return postservice.update(postId , postRequest);
 	    }
+	
+	@PatchMapping("/postsApprove/{postId}/{userId}")
+    public ResponseEntity<?> approvePost(@PathVariable long postId,@PathVariable long userId) {
+	 		return postservice.aprovePost(postId , userId);
+    }
+	
+	@PatchMapping("/postsApproveAll/{userId}")
+	public ResponseEntity<?> approveAllPost(@PathVariable long userId) {
+		return postservice.aproveAllPost(userId);
+	}
 	
 	@DeleteMapping("/posts/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) {
