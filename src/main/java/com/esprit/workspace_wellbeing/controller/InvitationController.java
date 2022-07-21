@@ -2,21 +2,11 @@ package com.esprit.workspace_wellbeing.controller;
 
 import org.springframework.http.ResponseEntity;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.validation.Valid;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,24 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.esprit.workspace_wellbeing.entity.Etat; 
 import com.esprit.workspace_wellbeing.entity.Event;
 import com.esprit.workspace_wellbeing.entity.Invitation;
-import com.esprit.workspace_wellbeing.entity.Notification;
-import com.esprit.workspace_wellbeing.repository.EtatRepository;
 import com.esprit.workspace_wellbeing.repository.EventRepository;
 import com.esprit.workspace_wellbeing.repository.InvitationRepository;
-import com.esprit.workspace_wellbeing.repository.NotificationRepository;
-import com.esprit.workspace_wellbeing.repository.UserRepository;
-import com.esprit.workspace_wellbeing.security.jwt.request.InvitationForm;
-import com.esprit.workspace_wellbeing.security.jwt.response.ResponseMessage;
-import com.esprit.workspace_wellbeing.service.InvitationService;
-import com.esprit.workspace_wellbeing.service.NotificationService;
-import com.esprit.workspace_wellbeing.enums.EtatName;
 
+import com.esprit.workspace_wellbeing.service.InvitationService;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Date ;
+
+import javax.mail.MessagingException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -61,17 +45,16 @@ public class InvitationController {
     @Autowired
     private InvitationService invitationService;
 
-    @Autowired
+   /* @Autowired
     private NotificationRepository notificationRepository;
     
     @Autowired
     private UserRepository userRepository;
+    
     @Autowired
-    private NotificationService notificationService;
+    private NotificationService notificationService;*/
     
-    
-  /*  @Autowired
-    private EtatRepository etatRepository;*/
+ 
      
     @GetMapping("/invitations")
     public ResponseEntity<List<Invitation>> GetAllInvitation() {
@@ -119,9 +102,7 @@ public class InvitationController {
         
          if(activityData.isPresent()){
             Invitation invitationLocal = activityData.get();
-//            invitationLocal.setValidation(invitation.getValidation());
-            invitationLocal.setFavoris(invitation.getFavoris());
-            invitationLocal.setParticipation(invitation.getParticipation());
+            invitationLocal.setFavorit(invitation.getFavorit());
 
                  return new ResponseEntity<>(invitationRepository.save(invitationLocal),HttpStatus.OK);
          }else{
@@ -135,21 +116,21 @@ public class InvitationController {
     public ResponseEntity<?> addInvitation(@RequestBody Invitation invitationRequest,
     		@PathVariable String receiver_username,
     		@PathVariable String sender_username,
-    		@PathVariable long event_id) {
+    		@PathVariable long event_id) throws MessagingException, IOException {
     
-    	Long receiver_id=userRepository.findByUsername(receiver_username).get().getId();
+    	/*Long receiver_id=userRepository.findByUsername(receiver_username).get().getId();
 
     	  List<Invitation> listInvitations=invitationService.existInvitationToSender(event_id, receiver_id);
     	  if(listInvitations.size()>0) {
     		   return new ResponseEntity<>(new ResponseMessage("Fail -> Invitation already Sent to "+ receiver_username),
                        HttpStatus.BAD_REQUEST);
     		   }
-    	  else {
+    	  else {*/
     	  Invitation invitationLocal = invitationService.addInvitation(invitationRequest,receiver_username,sender_username ,event_id);
           if (invitationLocal == null)
               return ResponseEntity.noContent().build();
           return new ResponseEntity<>(invitationLocal, HttpStatus.OK);
-    	  }
+    	 // }
     }
 
 

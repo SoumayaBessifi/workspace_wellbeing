@@ -75,7 +75,6 @@ public class EventController {
                 Event eventLocal = eventData.get();
                 eventLocal.setTitle(event.getTitle());
                 eventLocal.setDescription(event.getDescription());
-                eventLocal.setFile(event.getFile());
                 eventLocal.setLieu(event.getLieu()); 
                 eventLocal.setStart_date(event.getStart_date());
                 eventLocal.setEnd_date(event.getEnd_date()); 
