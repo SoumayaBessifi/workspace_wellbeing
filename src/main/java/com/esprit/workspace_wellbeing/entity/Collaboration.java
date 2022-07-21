@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,10 +14,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.format.annotation.DateTimeFormat;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,10 +41,12 @@ public class Collaboration implements Serializable{
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		@Column(name = "id_Collaboration")
 		private Long id_Collaboration;
+		@NotNull(message ="Collaboration Name is required")
+        @NotEmpty
 		private String collaborationName;
-		@Temporal(TemporalType.DATE)
+		@DateTimeFormat(pattern="dd/mm/yyyy")
+        @NotNull(message="dateCollaboration is required")
 		private Date date_collaboration;
-		
 		@OneToMany(targetEntity = Offre.class, cascade = CascadeType.ALL)
 		@JoinColumn(name = "coll_fk", referencedColumnName = "id_Collaboration")
 		    private Set<Offre> offre;

@@ -41,9 +41,10 @@ public class CollaborationController {
 	
 	@DeleteMapping("/deleteCollaboration/{collaborationId}")
 	@ResponseBody
-	public void deleteCollaboration(@PathVariable("collaborationId") Long id) {
+	public ResponseEntity<?> deleteCollaboration(@PathVariable("collaborationId") Long id) {
 		icollaborationService.deleteCollaboration(id);
-
+		  return new ResponseEntity<>(
+			      "Collaboration deleted successfully", HttpStatus.OK);
 	}
 	
 	@GetMapping("/findAllCollaboration")
@@ -58,10 +59,11 @@ public class CollaborationController {
 	public Collaboration getCollaborationById(@PathVariable("collaborationId") Long collaborationId) {
 	return icollaborationService.getCollaboration(collaborationId);
 	}
-	@PutMapping("/updateCollaboration")
+	@PutMapping("/updateCollaboration/{collaborationId}")
 	@ResponseBody 
-	public Collaboration updateCollaboration(@RequestBody Collaboration collaboration) {
-	return icollaborationService.updateCollaboration(collaboration);
+	public Collaboration updateCollaboration(@RequestBody Collaboration collaboration,@PathVariable long collaborationId) {
+	
+		return icollaborationService.updateCollaboration(collaboration,collaborationId);
 	}
 	
 

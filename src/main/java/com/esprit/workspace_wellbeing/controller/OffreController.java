@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -57,8 +59,10 @@ public class OffreController {
 	
 	@DeleteMapping("/deleteOffre/{offreId}")
 	@ResponseBody
-	public void deleteOffre(@PathVariable("offreId") Long id) {
+	public ResponseEntity<?>  deleteOffre(@PathVariable("offreId") Long id) {
 		iOffreService.deleteOffre(id);
+		  return new ResponseEntity<>(
+			      "Offre deleted successfully", HttpStatus.OK);
 	}
 
 	
