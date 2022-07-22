@@ -2,6 +2,7 @@ package com.esprit.workspace_wellbeing.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +35,7 @@ public class CollaborationController {
 	
 	@PostMapping("/addNewCollaboration/{user_id}")
 	@ResponseBody
-	public Collaboration addCollab(@RequestBody Collaboration c,@PathVariable Long user_id) {
+	public Collaboration addCollab(@Valid @RequestBody Collaboration c,@PathVariable Long user_id) {
 		
 		
 		return icollaborationService.addCollaboration(c,user_id);
@@ -61,11 +63,16 @@ public class CollaborationController {
 	}
 	@PutMapping("/updateCollaboration/{collaborationId}")
 	@ResponseBody 
-	public Collaboration updateCollaboration(@RequestBody Collaboration collaboration,@PathVariable long collaborationId) {
+	public Collaboration updateCollaboration(@Valid @RequestBody Collaboration collaboration,@PathVariable long collaborationId) {
 	
 		return icollaborationService.updateCollaboration(collaboration,collaborationId);
 	}
 	
+	@GetMapping("/collaboration/search")
+    public ResponseEntity<List<Collaboration>> searchCollaborations(@RequestParam("query") String query){
+        return ResponseEntity.ok(icollaborationService.searchCollaboration(query));
+    }
+
 
 	
 	

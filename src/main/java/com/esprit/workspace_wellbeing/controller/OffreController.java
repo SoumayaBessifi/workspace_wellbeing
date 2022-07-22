@@ -2,8 +2,11 @@ package com.esprit.workspace_wellbeing.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,8 @@ import com.esprit.workspace_wellbeing.entity.OffreDto;
 import com.esprit.workspace_wellbeing.service.ICollaborationService;
 import com.esprit.workspace_wellbeing.service.IOffreService;
 import com.esprit.workspace_wellbeing.utilities.FileUtilities;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @RestController
 @RequestMapping("/api")
@@ -34,10 +39,9 @@ public class OffreController {
 	IOffreService iOffreService;
 	
 	
-
 @Autowired
 	ModelMapper modelMapper;
-	@RequestMapping(value="/addOffre/{collaboration_name}", method= RequestMethod.POST, headers = "Accept=application/json",consumes= org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE, produces=org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(value="/addOffre/{collaboration_name}", method= RequestMethod.POST)
  	public Offre addOffre(@RequestBody @ModelAttribute OffreDto offreDto, @PathVariable String collaboration_name) {
 		Offre offre = modelMapper.map(offreDto, Offre.class);
 		//génerer le nom de l'image
@@ -72,6 +76,13 @@ public class OffreController {
 	List<Offre> listOffre = iOffreService.findAllOffre();
 	return listOffre;
 	}
+
+	@GetMapping("findALLOrderByRateAsc")
+	@ResponseBody
+	public List<Offre> findAllSortBy() {
+	List<Offre> listOffre = iOffreService.finadALL();
+	return listOffre;
+	}
 	
 	@GetMapping("/findOfferById/{offreId}")
 	@ResponseBody
@@ -80,8 +91,13 @@ public class OffreController {
 	}
 	@PutMapping("/updateOffre")
 	@ResponseBody 
-	public Offre updateOffre(@RequestBody Offre offre) {
+	public Offre updateOffre(@Valid @RequestBody Offre offre) {
 	return iOffreService.updateOffre(offre);
+	}
+	@GetMapping("/filterOffreWithMaximumRate")
+	@ResponseBody
+	public List<?> filterOffreWithMaxRate () {
+	return iOffreService.filterOffreWithMaximumRate();
 	}
 	
 	

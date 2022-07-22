@@ -87,5 +87,10 @@ public class CollaborationService implements ICollaborationService {
 	}
 
 	
+	  @Override
+	    public List<Collaboration> searchCollaboration(String query) {
+	        List<Collaboration> collaborations = collaborationRepository.searchCollaboration(query);
+	        return collaborations;
+	    }
 
 }
