@@ -85,9 +85,6 @@ public class EventController {
 
     }
 
-
-
-
     @DeleteMapping("/events/{eventId}")
     public ResponseEntity<Event> deleteEvent(@PathVariable long eventId) {
         eventRepository.deleteById(eventId);

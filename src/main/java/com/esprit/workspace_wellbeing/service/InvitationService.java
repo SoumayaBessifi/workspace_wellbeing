@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.esprit.workspace_wellbeing.entity.Invitation;
-
+import com.esprit.workspace_wellbeing.entity.User;
 import com.esprit.workspace_wellbeing.repository.InvitationRepository;
 import com.esprit.workspace_wellbeing.repository.EventRepository;
 import com.esprit.workspace_wellbeing.repository.UserRepository;
@@ -99,6 +99,16 @@ public void sendMailWithAttachement(String sender_mail,String receiver_mail,Stri
 	messageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
 	mailSender.send(mimeMessage);
 	
+}
+
+@Override
+public int nbrParticipationByEvent(Long event_id, Boolean participate) {
+	return invitationRepository.nbrParticipationByEvent(event_id, participate);
+}
+
+@Override
+public List<?> getParticipants(Long event_id, Boolean participate) {
+	return invitationRepository.getParticipants(event_id, participate);
 }
 
 }

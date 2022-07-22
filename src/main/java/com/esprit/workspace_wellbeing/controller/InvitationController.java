@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.esprit.workspace_wellbeing.entity.Event;
 import com.esprit.workspace_wellbeing.entity.Invitation;
+import com.esprit.workspace_wellbeing.entity.User;
 import com.esprit.workspace_wellbeing.repository.EventRepository;
 import com.esprit.workspace_wellbeing.repository.InvitationRepository;
 import com.esprit.workspace_wellbeing.repository.UserRepository;
@@ -89,15 +90,33 @@ public class InvitationController {
         Event event = eventRepository.findById(event_id).get(); 
         listInvitation = invitationRepository.findInvitationsByEvent(event);  
         return new ResponseEntity<>(listInvitation, HttpStatus.OK);
-
     }
     
-    @GetMapping("/invitations/{event_id}/{receiver_id}")
+    @GetMapping("/nbrParticipateByEvent/{event_id}/{participate}")
+    public ResponseEntity<?> nbrParticipationByEvent(@PathVariable long event_id,@PathVariable Boolean participate ) {
+    	if(participate==true) {
+    	 return new ResponseEntity<>(new ResponseMessage("Number Of paticipant in the event "+ 
+    	    		eventRepository.findById(event_id).get().getTitle()
+    	    		+" is "+invitationService.nbrParticipationByEvent(event_id, participate)), HttpStatus.OK);
+    	 }
+    	else {
+    		 return new ResponseEntity<>(new ResponseMessage("Number Of NON paticipant in the event "+ 
+     	    		eventRepository.findById(event_id).get().getTitle()
+     	    		+" is "+invitationService.nbrParticipationByEvent(event_id, participate)), HttpStatus.OK);
+    	}
+    }
+
+    @GetMapping("/nbrParticipateByEven/{event_id}/{participate}")
+    public List<?> getParticipantsByEvent(@PathVariable long event_id,@PathVariable Boolean participate ) {
+    	return  invitationService.getParticipants(event_id, participate);
+    }
+
+    /*@GetMapping("/invitations/{event_id}/{receiver_id}")
     public ResponseEntity<List<Invitation>> existInvitationToSender(@PathVariable long event_id,@PathVariable Long receiver_id) {
         List<Invitation> listInvitation; 
         listInvitation=invitationRepository.existInvitationToSender(event_id,receiver_id);
         return new ResponseEntity<>(listInvitation, HttpStatus.OK);
-    }
+    }*/
 
     @PutMapping("/invitations/{invitation_Id}")
     public ResponseEntity<Invitation> pullActivity(@PathVariable long invitation_Id,@RequestBody Invitation invitation) {
@@ -106,14 +125,29 @@ public class InvitationController {
         
          if(activityData.isPresent()){
             Invitation invitationLocal = activityData.get();
-            invitationLocal.setFavorit(invitation.getFavorit());
-
                  return new ResponseEntity<>(invitationRepository.save(invitationLocal),HttpStatus.OK);
          }else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
          }
 
     }
+    
+    @PostMapping("/invitations/{invitation_Id}")
+    public ResponseEntity<?> participate(@PathVariable long invitation_Id) {
+         Optional<Invitation> invitation = invitationService.getInvitationById(invitation_Id);
+        
+         if(invitation.isPresent()){
+            Invitation invitationLocal = invitation.get();
+            invitationLocal.setParticipate(true);
+            invitationRepository.save(invitationLocal);
+            return new ResponseEntity<>(new ResponseMessage("Your participation to the event"+ invitationLocal.getEvent().getTitle()+" is well submited"), HttpStatus.OK);
+         }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+         }
+
+    }
+    
+    
       
    
     @PostMapping("/invitations/{receiver_username}/{sender_username}/{event_id}")
@@ -122,8 +156,7 @@ public class InvitationController {
     		@PathVariable String sender_username,
     		@PathVariable long event_id) throws MessagingException, IOException {
     
-    	Long receiver_id=userRepository.findByUsername(receiver_username).get().getId();
-
+    	  Long receiver_id=userRepository.findByUsername(receiver_username).get().getId();
     	  List<Invitation> listInvitations=invitationService.existInvitationToSender(event_id, receiver_id);
     	 if(listInvitations.size()>0) {
     		   return new ResponseEntity<>(new ResponseMessage("Fail -> Invitation already Sent to "+ receiver_username),
@@ -143,6 +176,9 @@ public class InvitationController {
         invitationRepository.deleteById(invitation_Id);
         return ResponseEntity.accepted().build();
     }
+    
+    
 
+    
  
 }

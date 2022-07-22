@@ -10,6 +10,7 @@ import com.esprit.workspace_wellbeing.entity.Commentaire;
 import com.esprit.workspace_wellbeing.entity.Event;
 import com.esprit.workspace_wellbeing.repository.CommentaireRepository;
 import com.esprit.workspace_wellbeing.repository.EventRepository;
+import com.esprit.workspace_wellbeing.security.jwt.response.ResponseMessage;
 import com.esprit.workspace_wellbeing.service.CommentaireService;
 
 import java.util.List;
@@ -27,7 +28,6 @@ public class CommentaireController {
 
     @Autowired
     private CommentaireRepository commentaireRepository;
-
 
 
     @Autowired
@@ -63,9 +63,15 @@ public class CommentaireController {
         Event event = eventRepository.findById(event_id).get(); 
         commentaireList = commentaireRepository.findCommentairesByEvent(event);  
         return new ResponseEntity<>(commentaireList, HttpStatus.OK);
-
     }
   
+    @GetMapping("/avgNotebyEvent/{event_id}")
+    public ResponseEntity<?> avgNoteByEvent(@PathVariable long event_id) {
+    	
+    return new ResponseEntity<>(new ResponseMessage("The average note attributed by comments of the event "+ 
+    		eventRepository.findById(event_id).get().getTitle()
+    		+" is "+commentaireService.avgNoteByEvent(event_id)), HttpStatus.OK);
+    }
 
     @PutMapping("/commentaires/{commentaire_Id}")
     public ResponseEntity<Commentaire> pullCommentaire(@PathVariable long commentaire_Id,@RequestBody Commentaire commentaire) {
@@ -90,11 +96,9 @@ public class CommentaireController {
     @PostMapping("/commentaires/{event_id}")
     public ResponseEntity<Commentaire> addCommentaire(@RequestBody Commentaire calendar, @PathVariable long event_id) {
         Commentaire commentaireLocal = commentaireService.addCommentaire(calendar, event_id);
-
         if (commentaireLocal == null)
             return ResponseEntity.noContent().build();
         return new ResponseEntity<>(commentaireLocal, HttpStatus.OK);
-
     }
 
 

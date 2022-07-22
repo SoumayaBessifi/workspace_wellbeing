@@ -20,9 +20,6 @@ public class Invitation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_invitation ;
 
-    private Boolean favorit=false ;
-
-
     private Boolean participate=false;
 
     @ManyToOne
