@@ -3,9 +3,11 @@ package com.esprit.workspace_wellbeing.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.esprit.workspace_wellbeing.entity.Offre;
+import com.esprit.workspace_wellbeing.entity.OffreDto;
 import com.esprit.workspace_wellbeing.repository.CollaborationRepository;
 import com.esprit.workspace_wellbeing.repository.OffreRepository;
 
@@ -53,6 +55,20 @@ public class OffreService implements IOffreService {
 
 	}
 
+	@Override
+	public List<Offre> finadALL() {
+        return offreRepository.findAll(sortByIdAsc());
+	}
+
+	  
+	    private Sort sortByIdAsc() {
+	        return Sort.by(Sort.Direction.ASC, "rate");
+	    }
+
+		@Override
+		public List<?> filterOffreWithMaximumRate() {
+			return offreRepository.filterOffreWithMaximumRate();
+		}
 
 	
 

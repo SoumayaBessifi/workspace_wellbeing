@@ -13,8 +13,8 @@ public interface IOffreService {
 	public Offre getOffre(Long id);
 	public Offre updateOffre(Offre o);
 	public List<Offre>  findAllOffreByCollaborationName(String col);
-
-
+	public List<Offre>  finadALL();
+	public List<?> filterOffreWithMaximumRate();
 
 
 }

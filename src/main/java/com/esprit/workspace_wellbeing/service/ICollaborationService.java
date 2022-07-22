@@ -13,6 +13,7 @@ public interface ICollaborationService {
 	public Collaboration getCollaboration(Long id);
 	public Collaboration updateCollaboration(Collaboration c, Long collaborationId);
 	void  assignOffreToCollaboration(Long id_Offre, Long id_Collaboration);
+    public  List<Collaboration> searchCollaboration(String query);
 
 }
 

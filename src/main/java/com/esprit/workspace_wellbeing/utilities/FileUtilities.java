@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 public class FileUtilities {
 
     public static void saveArticleImage(String fileName,
-                                        MultipartFile multipartFile) {
+    		 MultipartFile multipartFile) {
         String path = "c:/images/offres/";
 
 
